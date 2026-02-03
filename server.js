@@ -1,0 +1,10 @@
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.post('/api/hijack', (req, res) => {
+    console.log('Victim data:', req.body);
+    res.json({ success: true });
+});
+
+app.listen(3000, () => console.log('C2 running'));
